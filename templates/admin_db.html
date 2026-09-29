@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin DB Inspector - Samanvay.app</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-8 font-sans">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+            <div>
+                <span class="bg-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded uppercase">Backend Middleware Inspector</span>
+                <h1 class="text-2xl font-extrabold mt-2">Registered Citizens Database</h1>
+            </div>
+            <a href="/" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg transition font-medium">&larr; Back to Portal</a>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-xl">
+            <div class="p-4 bg-slate-800/50 border-b border-slate-700 text-sm text-slate-400">
+                Total Registered Profiles in Memory: <strong class="text-white">{{ users | length }}</strong>
+            </div>
+
+            {% if users %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-900/50 text-slate-400 uppercase text-xs tracking-wider border-b border-slate-700">
+                            <th class="p-4">Full Name</th>
+                            <th class="p-4">Profession</th>
+                            <th class="p-4">Category</th>
+                            <th class="p-4">Phone</th>
+                            <th class="p-4">Income</th>
+                            <th class="p-4">Owned Docs</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        {% for user in users %}
+                        <tr class="hover:bg-slate-700/50 transition">
+                            <td class="p-4 font-bold text-white">{{ user.full_name }}</td>
+                            <td class="p-4"><span class="bg-blue-900/50 text-blue-300 border border-blue-700 px-2.5 py-1 rounded text-xs">{{ user.profession }}</span></td>
+                            <td class="p-4">{{ user.caste }}</td>
+                            <td class="p-4">{{ user.phone }}</td>
+                            <td class="p-4">{{ user.income }}</td>
+                            <td class="p-4 text-xs text-slate-300">
+                                {% for doc in user.owned_docs %}
+                                    <span class="bg-emerald-900/50 text-emerald-300 border border-emerald-700 px-2 py-0.5 rounded mr-1">{{ doc }}</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-12 text-center text-slate-400">
+                No citizen profiles registered yet. Try registering via <a href="/register" class="text-blue-400 underline">/register</a>!
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

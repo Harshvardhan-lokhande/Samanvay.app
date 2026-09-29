@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Middleware App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Login to Your Account</h2>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="mb-4 p-3 rounded text-sm {% if category == 'danger' %}bg-red-100 text-red-700{% elif category == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% if step == 'verify_otp' %}
+            <!-- STEP 2: OTP Entry Form -->
+            <form action="/login" method="POST" class="space-y-4">
+                <input type="hidden" name="auth_type" value="verify_otp">
+                <input type="hidden" name="phone_number" value="{{ phone_number }}">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Enter OTP sent to {{ phone_number }}</label>
+                    <input type="text" name="otp" required maxlength="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="123456">
+                </div>
+
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 font-semibold">Verify & Login</button>
+            </form>
+
+        {% else %}
+            <!-- STEP 1: Main Login Options -->
+            <div class="flex border-b mb-4">
+                <button id="tab-pass" onclick="toggleAuth('pass')" class="w-1/2 py-2 font-semibold text-center border-b-2 border-blue-600 text-blue-600">Password</button>
+                <button id="tab-otp" onclick="toggleAuth('otp')" class="w-1/2 py-2 font-semibold text-center text-gray-500 hover:text-blue-600">OTP</button>
+            </div>
+
+            <!-- Login via Password Form -->
+            <form id="form-password" action="/login" method="POST" class="space-y-4">
+                <input type="hidden" name="auth_type" value="password">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+                    <input type="tel" name="phone_number" required placeholder="9876543210" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" name="password" required placeholder="••••••••" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 font-semibold">Login</button>
+            </form>
+
+            <!-- Request OTP Form -->
+            <form id="form-otp" action="/login" method="POST" class="space-y-4 hidden">
+                <input type="hidden" name="auth_type" value="request_otp">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+                    <input type="tel" name="phone_number" required placeholder="9876543210" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 font-semibold">Send OTP</button>
+            </form>
+        {% endif %}
+
+        <p class="mt-4 text-xs text-center text-gray-500">
+            Don't have an account? <a href="/register" class="text-blue-600 underline">Register here</a>
+        </p>
+    </div>
+
+    <script>
+        function toggleAuth(type) {
+            const formPass = document.getElementById('form-password');
+            const formOtp = document.getElementById('form-otp');
+            const tabPass = document.getElementById('tab-pass');
+            const tabOtp = document.getElementById('tab-otp');
+
+            if (type === 'pass') {
+                formPass.classList.remove('hidden');
+                formOtp.classList.add('hidden');
+                tabPass.className = "w-1/2 py-2 font-semibold text-center border-b-2 border-blue-600 text-blue-600";
+                tabOtp.className = "w-1/2 py-2 font-semibold text-center text-gray-500 hover:text-blue-600";
+            } else {
+                formPass.classList.add('hidden');
+                formOtp.classList.remove('hidden');
+                tabOtp.className = "w-1/2 py-2 font-semibold text-center border-b-2 border-blue-600 text-blue-600";
+                tabPass.className = "w-1/2 py-2 font-semibold text-center text-gray-500 hover:text-blue-600";
+            }
+        }
+    </script>
+</body>
+</html>

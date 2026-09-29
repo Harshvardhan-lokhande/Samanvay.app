@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stage 2: Document Vault Upload - Samanvay.app</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between font-sans">
+
+    <div class="w-full h-1.5 bg-gradient-to-r from-orange-500 via-white to-green-600"></div>
+
+    <header class="bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="/" class="flex items-center space-x-3">
+                    <div class="flex items-center justify-center w-12 h-12 bg-amber-100 border-2 border-amber-500 rounded-full shadow-inner text-amber-800">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2c-1.1 0-2 .9-2 2 0 .74.4 1.38 1 1.72V7h-3c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2h-3V5.72c.6-.34 1-.98 1-1.72 0-1.1-.9-2-2-2zm0 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-4 5h8v8H8v-8z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-900 bg-blue-50 px-2 py-0.5 rounded">Samanvay.app</span>
+                        <span class="block text-xs font-medium text-slate-500 mt-0.5">Govt. of Maharashtra Middleware</span>
+                    </div>
+                </a>
+            </div>
+            <div class="text-right">
+                <span class="text-xs text-slate-500 block">Logged in as</span>
+                <span class="text-sm font-semibold text-slate-800">{{ user.full_name or 'Citizen' }}</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+        <div class="bg-white p-8 sm:p-10 rounded-2xl shadow-xl border border-slate-200">
+            
+            <div class="text-center mb-8">
+                <span class="bg-emerald-50 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider border border-emerald-200">Stage 2 of 2: Document Vault</span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3">Upload Selected Documents</h1>
+                <p class="text-slate-600 text-sm mt-1">Upload the files for all documents you selected during registration.</p>
+            </div>
+
+            {% if error %}
+            <div class="mb-6 p-4 rounded-xl border border-red-200 bg-red-50 text-red-800 text-sm font-medium flex items-center space-x-2">
+                <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form action="/document-vault" method="POST" enctype="multipart/form-data" class="space-y-6">
+                
+                <div class="space-y-4">
+                    {% if 'aadhaar' in user.owned_docs %}
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <label class="block text-sm font-bold text-slate-800 mb-1">Aadhaar Card (PDF/JPG) <span class="text-red-500">*</span></label>
+                        <input type="file" name="file_aadhaar" required class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-900 hover:file:bg-blue-100 cursor-pointer">
+                        <input type="hidden" name="vaulted_docs" value="aadhaar">
+                    </div>
+                    {% endif %}
+
+                    {% if 'income_cert' in user.owned_docs %}
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <label class="block text-sm font-bold text-slate-800 mb-1">Income Certificate (PDF/JPG) <span class="text-red-500">*</span></label>
+                        <input type="file" name="file_income" required class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-900 hover:file:bg-blue-100 cursor-pointer">
+                        <input type="hidden" name="vaulted_docs" value="income_cert">
+                    </div>
+                    {% endif %}
+
+                    {% if 'caste_cert' in user.owned_docs %}
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <label class="block text-sm font-bold text-slate-800 mb-1">Caste Certificate (PDF/JPG) <span class="text-red-500">*</span></label>
+                        <input type="file" name="file_caste" required class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-900 hover:file:bg-blue-100 cursor-pointer">
+                        <input type="hidden" name="vaulted_docs" value="caste_cert">
+                    </div>
+                    {% endif %}
+
+                    {% if 'domicile' in user.owned_docs %}
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <label class="block text-sm font-bold text-slate-800 mb-1">Domicile Certificate (PDF/JPG) <span class="text-red-500">*</span></label>
+                        <input type="file" name="file_domicile" required class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-900 hover:file:bg-blue-100 cursor-pointer">
+                        <input type="hidden" name="vaulted_docs" value="domicile">
+                    </div>
+                    {% endif %}
+
+                    {% if not user.owned_docs %}
+                    <div class="p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-sm">
+                        No specific documents were selected during registration. You can proceed directly to the dashboard.
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" 
+                        class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3.5 px-4 rounded-lg transition duration-200 shadow-md text-base">
+                        Save to Vault & Go to Dashboard &rarr;
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+        <p>Official Digital Portal • Developed in collaboration with Government of Maharashtra</p>
+    </footer>
+
+</body>
+</html>
